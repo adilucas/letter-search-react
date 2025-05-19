@@ -16,7 +16,8 @@ That will run the application in serverless mode using Vite scripts and proxy co
 
 ### 🏗️ `npm run dev:server`
 
-That will run the application using Express server. Note that it will base on files built in `/dist` directory so you need to run `npm run build` each time. Should be used in backend development process.
+That will run the application using Express server. It has two modes dependent on environment. Once you run this command you can develop your app using preview on `http://localhost:3000`. \
+The other mode is for running app on production ⬇️
 
 ### Production Build
 
