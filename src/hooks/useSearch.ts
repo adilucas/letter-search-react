@@ -38,7 +38,7 @@ export const useSearch = () => {
       if (/^[a-zA-Z]?$/.test(value)) {
         setLetter(value);
       }
-    }, 500), []
+    }, 300), []
   )
 
   const count = useMemo(() => {
@@ -46,6 +46,12 @@ export const useSearch = () => {
 
     return cities.filter(city => city.name.toLowerCase().startsWith(letter.toLowerCase())).length;
   }, [letter, cities]);
+
+  useEffect(() => {
+    return () => {
+      handleSearch.cancel();
+    }
+  }, [handleSearch])
 
   return {
     letter,
