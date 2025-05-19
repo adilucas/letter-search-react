@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getCityList, type CityItem } from "../utils/api";
 import debounce from "lodash.debounce";
+import { getFromStorage, saveToStorage } from "../utils/storage";
 
 export const useSearch = () => {
   const [letter, setLetter] = useState('');
@@ -10,10 +11,18 @@ export const useSearch = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      const cached = getFromStorage();
+
+      if (cached) {
+        setCities(cached);
+        return;
+      }
+
       setIsLoading(true);
       try {
         const list = await getCityList();
         setCities(list);
+        saveToStorage(list);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown Error');
       } finally {
@@ -32,7 +41,11 @@ export const useSearch = () => {
     }, 500), []
   )
 
-  const count = cities && letter ? cities.filter(c => c.name.toLowerCase().startsWith(letter.toLowerCase())).length : 0;
+  const count = useMemo(() => {
+    if (!letter || !cities) return 0;
+
+    return cities.filter(city => city.name.toLowerCase().startsWith(letter.toLowerCase())).length;
+  }, [letter, cities]);
 
   return {
     letter,
